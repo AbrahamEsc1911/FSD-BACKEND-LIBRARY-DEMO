@@ -12,5 +12,17 @@ $ git express
 ```
 
 ```sh
-$ npm i
+$ npm i typescript -D
+```
+
+```sh
+$ npm tsc
+```
+
+```sh
+$ npm i nodemon -D
+```
+
+```sh
+$ npm i ts-node -D
 ```

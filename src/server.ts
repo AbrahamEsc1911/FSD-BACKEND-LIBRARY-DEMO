@@ -7,5 +7,5 @@ app.get('/healthy', (req, res) => {
 })
 
 app.listen(4000, () => {
-    console.log("Server is running");
+    console.log("Server is running is now 4000");
 })
