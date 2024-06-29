@@ -1,4 +1,11 @@
+import 'dotenv/config'
 import express from 'express';
+import { authorsDetailsById, authorsList, deleteAuthorById, newAuthors, updateAuthorById} from './controllers/authors.controller';
+import { bookDetailsById, bookList, deleteBookById, newBook, updateBooksById } from './controllers/books.controller';
+import { addFavoriteBook, allUsers, deleteFavoriteBook, deleteUserById, favoriteBooks, newUser, updateProfile, updateRoleById, updateUserById, userDetails, usersProfile } from './controllers/user.controller';
+import { deleteLoansById, loansByCurrentUser, loansByUserId, loansDetailsById, loansList, loansReturnedById, newLoans, updateLoansById } from './controllers/loans.controller';
+import { login, newUserRegister } from './controllers/autentication.controller';
+
 
 const app = express();
 
@@ -8,53 +15,67 @@ app.use(express.json())
 
 const PORT = process.env.PORT || 4000;
 
-app.get('/healthy', (req, res) => {
-    res.send('server is healthy')
-})
+//////// USER
 
-///AUTHORS
+app.get('/api/users/profile', usersProfile)
+app.get('/api/users/favorite_books', favoriteBooks)
+app.get('/api/users', allUsers)
+app.get('/api/user/:id', userDetails)
 
-app.post('/authors', (req, res) =>{
-    // recueperar la información de la req
-    console.log(req.body)
-    console.log(req.body.nationality)
-    console.log(req.body.name)
+app.post('/api/users/favorite_books', addFavoriteBook)
+app.post('/api/users', newUser)
 
+app.put('/api/users/profile', updateProfile)
+app.put('/api/users/:id', updateUserById)
+app.put('/api/users/:id/role', updateRoleById)
 
-    res.send('Create authors')
-})
-
-
-//// Rutas dinamicas req params /:.....
-app.put('/authors/:id', (req, res) =>{
-    console.log(req.body.id)
-
-    res.send(`author update with ${req.params.id}`)
-})
-
-app.delete('/author/:id', (req, res) => {
-
-    res.send(`author ${req.params.id} was deleted`)
-})
+app.delete('/api/users/favorite_books', deleteFavoriteBook)
+app.delete('/api/users/:id', deleteUserById)
 
 
-/// BOOKS
+//////// AUTHORS
 
-app.get('/books', (req, res) => {
-    res.send('get all books')
-})
+app.get('/api.authors', authorsList)
+app.get('/api/authors/:id', authorsDetailsById)
 
-app.post('/books', (req, res) =>{
-    res.send('Book created')
-})
+app.post('/api/authors', newAuthors)
 
-app.put('/book', (req, res) => {
-    res.send('Book updated')
-})
+app.put('/api/authors/:id', updateAuthorById)
 
-app.delete('/book', (req, res) => {
-    res.send('books deleted')
-})
+app.delete('/api/authors/:id', deleteAuthorById)
+
+
+///////// BOOKS
+
+app.get('/api/books', bookList)
+app.get('/api/books/:id', bookDetailsById)
+
+app.post('/api/books', newBook)
+
+app.put('/api/books/:id', updateBooksById)
+
+app.delete('/api/books/:id', deleteBookById)
+
+////////// LOANS
+
+app.get('/api/loans', loansList)
+app.get('/api/loans/:id', loansDetailsById)
+app.get('/api/loans/users/current', loansByCurrentUser)
+app.get('/api/loans/users/:usersId', loansByUserId)
+
+app.post('/api/loans', newLoans)
+
+app.put('/api/loans/:id', updateLoansById)
+app.put('/api/loans/return/:id', loansReturnedById)
+
+app.delete('/api/loans/return/:id', deleteLoansById)
+
+
+/////// AUTENTICACIÓN
+
+app.post('/api/auth/register', newUserRegister)
+app.post('/api/auth/login', login)
+
 
 app.listen(4000, () => {
     console.log(`Server is running on port ${PORT}`);
