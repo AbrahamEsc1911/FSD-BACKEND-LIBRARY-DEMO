@@ -5,6 +5,7 @@ import { bookDetailsById, bookList, deleteBookById, newBook, updateBooksById } f
 import { addFavoriteBook, allUsers, deleteFavoriteBook, deleteUserById, favoriteBooks, newUser, updateProfile, updateRoleById, updateUserById, userDetails, usersProfile } from './controllers/user.controller';
 import { deleteLoansById, loansByCurrentUser, loansByUserId, loansDetailsById, loansList, loansReturnedById, newLoans, updateLoansById } from './controllers/loans.controller';
 import { login, newUserRegister } from './controllers/autentication.controller';
+import { AppDataSource } from './database/db';
 
 
 const app = express();
@@ -77,6 +78,13 @@ app.post('/api/auth/register', newUserRegister)
 app.post('/api/auth/login', login)
 
 
+AppDataSource.initialize()
+.then(() => {
+console.log('Database connected');
 app.listen(4000, () => {
     console.log(`Server is running on port ${PORT}`);
+})
+})
+.catch(error => {
+console.log(error)
 })
