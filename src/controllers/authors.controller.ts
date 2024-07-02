@@ -97,9 +97,38 @@ export const updateAuthorById = (req: Request, res: Response) => {
 
 /////// DELETE
 
-export const deleteAuthorById = (req: Request, res: Response) => {
-    res.json({
+export const deleteAuthorById = async (req: Request, res: Response) => {
+   try {
+
+    /////Recuperar el ID a eliminar 
+
+    const authorIdToDelete = req.params.id
+
+    /////Eliminar el author de la BD
+
+    const authorDeleted = await Authors.delete(authorIdToDelete)
+    if(!authorDeleted.affected) {
+        return res.status(404).json({
+            success : false,
+            message : 'Author doesnt exist'
+        })
+    }
+
+    /////Repuesta
+
+    res.status(200).json({
         success: true,
-        message: `Elimina Author ${req.params.id}`
+        message: `Elimina Author ${req.params.id}`,
+        data : authorDeleted
     })
+   } catch (error) {
+    res.status(500).json({
+        success : false,
+        message : "Error deleting",
+        error : error
+    })
+   }
+   
+   
+   
 }
