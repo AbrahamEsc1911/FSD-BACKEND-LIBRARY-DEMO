@@ -88,11 +88,36 @@ try {
 
 ////// PUT
 
-export const updateAuthorById = (req: Request, res: Response) => {
-    res.json({
-        success: true,
-        message: `Actualizar Autor ${req.params.id}`
-    })
+export const updateAuthorById = async (req: Request, res: Response) => {
+    
+    try {
+
+        //// Recuperar la info
+        const auhtorIdToUpdate = (req.params.id)
+        const body = req.body
+
+        ////Validar >>> en este caso no es necesario, debido a que solo va a actualizar los datos que me envien
+        ///tratar la info
+
+        ///Guardar en DB >>>> no es necesario
+
+        const authorUpdated = await Authors.update({id: parseInt(auhtorIdToUpdate)}, body)
+
+        ///Responder
+
+        res.status(200).json({
+            success: true,
+            message: `Actualizar Autor ${req.params.id}`,
+            data : authorUpdated
+        })
+        
+    } catch (error) {
+        res.status(500).json({
+            seccess: false,
+            message: "Cant update",
+            error: error
+        })
+    }
 }
 
 /////// DELETE
