@@ -36,7 +36,7 @@ app.delete('/api/users/:id', deleteUserById)
 
 //////// AUTHORS
 
-app.get('/api.authors', authorsList)
+app.get('/api/authors', authorsList)
 app.get('/api/authors/:id', authorsDetailsById)
 
 app.post('/api/authors', newAuthors)

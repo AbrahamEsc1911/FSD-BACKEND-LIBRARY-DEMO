@@ -3,11 +3,27 @@ import { Authors } from "../database/models/Authors"
 
 ////// GET
 
-export const authorsList = (req: Request, res: Response) => {
+export const authorsList = async (req: Request, res: Response) => {
+   try {
+    //// Recuperar la info de la BD
+
+    //// modelo (creado anteriormente)
+    const authors = await Authors.find()
+
+    //// devolver la info de la BD
     res.json({
         success: true,
-        message: `Lista de autores`
+        message: `all authors retrieve successfully`,
+        data: authors
     })
+    
+   } catch (error) {
+    res.status(500).json({
+        succes: true,
+        message: 'cant retrive authors'
+    })
+   }
+    
 }
 
 export const authorsDetailsById = (req: Request, res: Response) => {
