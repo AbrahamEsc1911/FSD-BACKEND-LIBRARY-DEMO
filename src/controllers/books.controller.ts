@@ -11,21 +11,21 @@ export const bookList = async (req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             message: `Lista Libros`,
-            data : booksList
+            data: booksList
         })
 
     } catch (error) {
 
         res.status(500).json({
-            success : false,
-            message : `couldnt find books`,
-            error : error
+            success: false,
+            message: `couldnt find books`,
+            error: error
         })
-        
+
     }
 
 
-    
+
 }
 
 export const bookDetailsById = (req: Request, res: Response) => {
@@ -69,7 +69,7 @@ export const newBook = async (req: Request, res: Response) => {
         res.status(201).json({
             success: true,
             message: `book created`,
-            data : newBook
+            data: newBook
         })
     } catch (error) {
         res.status(500).json({
@@ -84,11 +84,29 @@ export const newBook = async (req: Request, res: Response) => {
 
 ////// PUT
 
-export const updateBooksById = (req: Request, res: Response) => {
+export const updateBooksById = async (req: Request, res: Response) => {
+try {
+
+    const id = req.params.id
+    const body = req.body
+
+    await Books.update({ id: parseInt(id) }, body)
+
     res.json({
         success: true,
-        message: `Actualiza libro ${req.params.id}`
+        message: `Actualiza libro ${req.params.id}`,
+        data : id
     })
+    
+} catch (error) {
+    res.status(500).json({
+        success : true,
+        message : 'Couldnt updated a book',
+        error : error
+    })
+    
+}
+    
 }
 
 ////// DELETE

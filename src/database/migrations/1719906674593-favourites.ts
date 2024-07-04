@@ -31,7 +31,7 @@ export class Favourites1719906674593 implements MigrationInterface {
                     },
                     {
                         columnNames: ['user_id'],
-                        referencedTableName: 'User',
+                        referencedTableName: 'users',
                         referencedColumnNames: ['id']
                     }
                 ],

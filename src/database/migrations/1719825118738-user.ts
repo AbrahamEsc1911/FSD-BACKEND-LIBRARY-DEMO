@@ -18,25 +18,25 @@ export class User1719825118738 implements MigrationInterface {
                         name: "name",
                         type: "varchar",
                         length: "255",
+                        isNullable: true
                     },
                     {
                         name: "email",
                         type: "varchar",
-                        length: "50",
+                        length: "100",
                         isNullable: false,
                         isUnique: true
                     },
                     {
                         name: "password",
                         type: "varchar",
-                        length: "50",
+                        length: "250",
                         isNullable: false
                     },
                     {
                         name: "is_active",
                         type: "Boolean",
                         default: true,
-                        isNullable: false
                     },
                     {
                         name: "role",

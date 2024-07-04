@@ -93,7 +93,7 @@ export const updateAuthorById = async (req: Request, res: Response) => {
     try {
 
         //// Recuperar la info
-        const auhtorIdToUpdate = (req.params.id)
+        const id = (req.params.id)
         const body = req.body
 
         ////Validar >>> en este caso no es necesario, debido a que solo va a actualizar los datos que me envien
@@ -101,7 +101,7 @@ export const updateAuthorById = async (req: Request, res: Response) => {
 
         ///Guardar en DB >>>> no es necesario
 
-        const authorUpdated = await Authors.update({id: parseInt(auhtorIdToUpdate)}, body)
+        const authorUpdated = await Authors.update({id: parseInt(id)}, body)
 
         ///Responder
 

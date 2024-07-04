@@ -2,10 +2,11 @@ import 'dotenv/config'
 import express from 'express';
 import { authorsDetailsById, authorsList, deleteAuthorById, newAuthors, updateAuthorById} from './controllers/authors.controller';
 import { bookDetailsById, bookList, deleteBookById, newBook, updateBooksById } from './controllers/books.controller';
-import { addFavoriteBook, allUsers, deleteFavoriteBook, deleteUserById, favoriteBooks, newUser, updateProfile, updateRoleById, updateUserById, userDetails, usersProfile } from './controllers/user.controller';
+import { addFavoriteBook, deleteFavoriteBook, deleteUserById, favoriteBooks, getAllUsers, getUsersProfile, updateProfile, updateRoleById, updateUserById, userDetails } from './controllers/user.controller';
 import { deleteLoansById, loansByCurrentUser, loansByUserId, loansDetailsById, loansList, loansReturnedById, newLoans, updateLoansById } from './controllers/loans.controller';
-import { login, newUserRegister } from './controllers/autentication.controller';
+import { login, register } from './controllers/autentication.controller';
 import { AppDataSource } from './database/db';
+import { auth } from './middlewares/auth';
 
 
 const app = express();
@@ -18,13 +19,13 @@ const PORT = process.env.PORT || 4000;
 
 //////// USER
 
-app.get('/api/users/profile', usersProfile)
+app.get('/api/users/profile', auth, getUsersProfile)
 app.get('/api/users/favorite_books', favoriteBooks)
-app.get('/api/users', allUsers)
+app.get('/api/users', getAllUsers)
 app.get('/api/user/:id', userDetails)
 
 app.post('/api/users/favorite_books', addFavoriteBook)
-app.post('/api/users', newUser)
+
 
 app.put('/api/users/profile', updateProfile)
 app.put('/api/users/:id', updateUserById)
@@ -37,14 +38,14 @@ app.delete('/api/users/:id', deleteUserById)
 
 //////// AUTHORS
 
-app.get('/api/authors', authorsList)
+app.get('/api/authors', auth, authorsList)
 app.get('/api/authors/:id', authorsDetailsById)
 
-app.post('/api/authors', newAuthors)
+app.post('/api/authors', auth, newAuthors)
 
-app.put('/api/authors/:id', updateAuthorById)
+app.put('/api/authors/:id', auth, updateAuthorById)
 
-app.delete('/api/authors/:id', deleteAuthorById)
+app.delete('/api/authors/:id', auth, deleteAuthorById)
 
 
 ///////// BOOKS
@@ -75,7 +76,7 @@ app.delete('/api/loans/return/:id', deleteLoansById)
 
 /////// AUTENTICACIÓN
 
-app.post('/api/auth/register', newUserRegister)
+app.post('/api/auth/register', register)
 app.post('/api/auth/login', login)
 
 
