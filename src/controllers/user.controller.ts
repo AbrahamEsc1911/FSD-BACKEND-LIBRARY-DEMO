@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from "express";
+import { Request, Response, response } from "express";
 import { User } from "../database/models/User";
+import { Favourites } from '../database/models/Favourites';
 
 
 ////GET
@@ -19,31 +20,76 @@ export const getUsersProfile = async (req: Request, res: Response) => {
                 id: Id
             }
         })
-        
+
         res.json({
-            success : true,
-            message : 'user profile retriver',
+            success: true,
+            message: 'user profile retriver',
             data: user
         })
 
     } catch (error) {
-
+        res.status(500).json({
+            success: false,
+            message: 'error retriving user profile'
+        })
     }
 
-   
+
 }
 
-export const favoriteBooks = (req: Request, res: Response) => {
-    res.json({
-        succes: true,
-        message: `Obtener mis favoritos`
-    })
+export const favoriteBooks = async (req: Request, res: Response) => {
+    try {
+
+        const id = req.tokenData.id
+
+        const favoritesBooks = await User.findOne(
+            {
+                select: {
+                    id: true,
+                    email: true,
+                },
+                where: {
+                    id: id,
+                }, relations: {
+                    favourites_books: {
+                        book: {
+                            author: true,
+                        }
+                    }
+
+                }
+            }
+        )
+
+        res.json(
+            {
+                success: true,
+                message: 'retrieveng ',
+                data: favoritesBooks
+            }
+        )
+
+    } catch (error) {
+        res.status(500).json(
+            {
+                success: false,
+                message: 'error retreiving data',
+                error: error
+            }
+        )
+    }
 }
 
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
 
+        const limit = Number(req.query.limit || 5)
+        const page = Number(req.query.page)
+
         const users = await User.find({
+            skip:(page-1)*limit,
+            take:limit,
+
             select: {
                 email: true,
                 is_active: true,
@@ -78,11 +124,41 @@ export const userDetails = (req: Request, res: Response) => {
 { }
 //// POST
 
-export const addFavoriteBook = (req: Request, res: Response) => {
-    res.json({
-        success: true,
-        message: `Agregar mi favorito`
-    })
+export const addFavoriteBook = async (req: Request, res: Response) => {
+    try {
+
+        const id = req.tokenData.id
+        const favouriteBook = req.body.book_id
+
+        if (!favouriteBook) {
+            return res.status(400).json({
+                success: false,
+                message: 'book id is requiered'
+            })
+        }
+
+        const newFavorite = await Favourites.create({
+            user_id: id,
+            books_id: favouriteBook
+        }).save()
+
+        res.json(
+            {
+                succes: true,
+                message: 'New favorite created',
+                data: newFavorite
+            }
+        )
+
+    } catch (error) {
+        res.status(500).json(
+            {
+                success: true,
+                message: 'Error adding favourites',
+                error: error
+            }
+        )
+    }
 }
 
 // export const newUser = async (req: Request, res: Response) => {
@@ -165,11 +241,51 @@ export const updateRoleById = (req: Request, res: Response) => {
 
 //// DELETE
 
-export const deleteFavoriteBook = (req: Request, res: Response) => {
-    res.json({
-        success: true,
-        message: `Eliminar mi Favorito`
-    })
+export const deleteFavoriteBook = async (req: Request, res: Response) => {
+    try {
+        
+        const id = req.tokenData.id
+        const favoriteId = req.params.favs_id
+
+        const userFavorite = await Favourites.findOne({
+            where: {
+                id: parseInt(favoriteId), 
+                user_id: id
+            }
+        })
+
+        if(!userFavorite){
+            return res.status(400).json(
+                {
+                    success: false,
+                    message: 'fav not found'
+                }
+            )
+        }
+
+        const bookDelete = await Favourites.delete(
+            {
+                id : parseInt(favoriteId)
+            }
+        )
+
+        res.json(
+            {
+                succes: true,
+                message: `favorite deleted successfully`,
+                data: bookDelete
+            }
+        )
+
+    } catch (error) {
+        res.status(500).json(
+            {
+                success: false,
+                message: 'Error deleting favourites',
+                error: error
+            }
+        )
+    }
 }
 
 export const deleteUserById = (req: Request, res: Response) => {

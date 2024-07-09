@@ -7,6 +7,7 @@ import { deleteLoansById, loansByCurrentUser, loansByUserId, loansDetailsById, l
 import { login, register } from './controllers/autentication.controller';
 import { AppDataSource } from './database/db';
 import { auth } from './middlewares/auth';
+import { isAdmin } from './middlewares/isAdmin';
 
 
 const app = express();
@@ -20,32 +21,32 @@ const PORT = process.env.PORT || 4000;
 //////// USER
 
 app.get('/api/users/profile', auth, getUsersProfile)
-app.get('/api/users/favorite_books', favoriteBooks)
+app.get('/api/users/favorite_books', auth, favoriteBooks)
 app.get('/api/users', getAllUsers)
 app.get('/api/user/:id', userDetails)
 
-app.post('/api/users/favorite_books', addFavoriteBook)
+app.post('/api/users/favorite_books', auth, addFavoriteBook)
 
 
 app.put('/api/users/profile', updateProfile)
 app.put('/api/users/:id', updateUserById)
 app.put('/api/users/:id/role', updateRoleById)
 
-app.delete('/api/users/favorite_books', deleteFavoriteBook)
+app.delete('/api/users/:favs_id', auth, deleteFavoriteBook)
 app.delete('/api/users/:id', deleteUserById)
 
 
 
 //////// AUTHORS
 
-app.get('/api/authors', auth, authorsList)
+app.get('/api/authors', auth, isAdmin, authorsList)
 app.get('/api/authors/:id', authorsDetailsById)
 
-app.post('/api/authors', auth, newAuthors)
+app.post('/api/authors', auth, isAdmin, newAuthors)
 
-app.put('/api/authors/:id', auth, updateAuthorById)
+app.put('/api/authors/:id', auth, isAdmin, updateAuthorById)
 
-app.delete('/api/authors/:id', auth, deleteAuthorById)
+app.delete('/api/authors/:id', auth, isAdmin, deleteAuthorById)
 
 
 ///////// BOOKS

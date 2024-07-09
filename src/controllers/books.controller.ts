@@ -6,7 +6,22 @@ import { Books } from "../database/models/Books"
 export const bookList = async (req: Request, res: Response) => {
     try {
 
-        const booksList = await Books.find()
+        
+        const booksList = await Books.find(
+            {
+                select: {
+                    title: true,
+                    description: true,
+                    author: {
+                        id: true,
+                        name: true,
+                        nationality: true,
+                    }
+                }, relations: {
+                    author: true,
+                }
+            }
+        )
 
         res.status(200).json({
             success: true,

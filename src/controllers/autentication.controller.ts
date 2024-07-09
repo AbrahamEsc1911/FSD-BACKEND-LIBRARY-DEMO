@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import { User } from "../database/models/User";
 
+
 export const register = async (req: Request, res: Response) => {
     try {
         //! recuperar la inf 
